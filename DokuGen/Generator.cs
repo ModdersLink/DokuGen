@@ -168,7 +168,49 @@ namespace DokuGen
 
         private string PrintField(FieldInfo p_Field, int p_HeaderLevel)
         {
-            return string.Empty;
+            if (p_Field.Name == "value__")
+                return string.Empty;
+
+            var s_Doc = m_Docs.FirstOrDefault(p_Doc => p_Doc.AssemblyName == p_Field.DeclaringType.Assembly.GetName().Name);
+
+            var s_DocField = s_Doc?.GetDocField($"{p_Field.ReflectedType.FullName}.{p_Field.Name}");
+
+            using (var s_Writer = new StringWriter())
+            {
+                // Create the header level
+                var s_TitleHeader = new string('=', p_HeaderLevel);
+
+                // Write out the name header
+                s_Writer.WriteLine($"{s_TitleHeader} {p_Field.Name} {s_TitleHeader}");
+                s_Writer.WriteLine();
+
+                s_Writer.WriteLine($"''{s_DocField?.FullPath}''");
+
+                s_Writer.WriteLine($"<code>{s_DocField?.Summary}</code>");
+                s_Writer.WriteLine();
+
+                //var s_Modifier = string.Empty;
+
+                //if (p_Method.IsPublic)
+                //    s_Modifier = c_Public;
+                //else if (p_Method.IsPrivate)
+                //    s_Modifier = c_Private;
+
+                //s_Writer.WriteLine($"{s_Modifier} {p_Method.ToString()}");
+
+                //if (s_DocField != null)
+                //{
+                //    foreach (var l_Parameter in s_DocField.GetDocParameters())
+                //    {
+                //        s_Writer.WriteLine($"<code>{l_Parameter.Name} - {l_Parameter.Summary}</code>");
+                //        s_Writer.WriteLine();
+                //    }
+                //}
+
+                s_Writer.WriteLine("----");
+
+                return s_Writer.ToString();
+            }
         }
 
         private string PrintMethod(MethodInfo p_Method, int p_HeaderLevel)
@@ -264,10 +306,10 @@ namespace DokuGen
                 s_Writer.WriteLine();
 
                 // Write fields
-                //s_Writer.WriteLine($"{s_SubHeader} Fields {s_SubHeader}");
-                //foreach (var l_Field in p_Type.GetFields())
-                //    s_Writer.WriteLine(PrintField(l_Field, (p_HeaderLevel > 2 ? p_HeaderLevel - 2 : 1)));
-                //s_Writer.WriteLine();
+                s_Writer.WriteLine($"{s_SubHeader} Fields {s_SubHeader}");
+                foreach (var l_Field in p_Type.GetFields())
+                    s_Writer.WriteLine(PrintField(l_Field, (p_HeaderLevel > 2 ? p_HeaderLevel - 2 : 1)));
+                s_Writer.WriteLine();
 
                 // Write methods
                 s_Writer.WriteLine($"{s_SubHeader} Methods {s_SubHeader}");

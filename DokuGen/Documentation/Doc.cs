@@ -255,5 +255,10 @@ namespace DokuGen.Documentation
         {
             return m_Events.FirstOrDefault(p_Event => p_Event.FullPath.StartsWith(p_SearchEvent, true, CultureInfo.CurrentCulture));
         }
+
+        public DocField GetDocField(string p_SearchField)
+        {
+            return m_Fields.FirstOrDefault(p_Field => p_Field.FullPath.StartsWith(p_SearchField, true, CultureInfo.CurrentCulture));
+        }
     }
 }
